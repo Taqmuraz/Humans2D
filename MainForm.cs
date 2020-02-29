@@ -39,7 +39,7 @@ namespace WinFormsGraphics
 		{
 			foreach (var bone in human.GetBones ())
 			{
-				new TransformPositionControl (bone.bone);
+				if (bone.bone.parent == null) new TransformPositionControl (bone.bone);
 				new TransformRotationControl (bone.bone);
 			}
 		}

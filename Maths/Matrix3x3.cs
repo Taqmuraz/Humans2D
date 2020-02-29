@@ -66,15 +66,15 @@
 
 		public static Vector3 operator * (Matrix3x3 m, Vector3 v)
 		{
-			Matrix3x3 lines = m.GetTransponed ();
-			float x = Vector3.Dot (v, lines.row_0);
-			float y = Vector3.Dot (v, lines.row_1);
-			float z = Vector3.Dot (v, lines.row_2);
+			float x = Vector3.Dot (v, m.row_0);
+			float y = Vector3.Dot (v, m.row_1);
+			float z = Vector3.Dot (v, m.row_2);
 			return new Vector3 (x, y, z);
 		}
 
 		public static Matrix3x3 operator * (Matrix3x3 a, Matrix3x3 b)
 		{
+			b = b.GetTransponed ();
 			Vector3 c0 = b * a.row_0;
 			Vector3 c1 = b * a.row_1;
 			Vector3 c2 = b * a.row_2;
@@ -165,7 +165,6 @@
 		public Matrix2x2 Minor (int x, int y)
 		{
 			var m = new Matrix2x2 ();
-			var t = GetTransponed ();
 			int nx = 0;
 
 			for (int i = 0; i < 3; i++)
@@ -175,7 +174,7 @@
 				for (int j = 0; j < 3; j++)
 				{
 					if (j == y) continue;
-					m[nx, ny] = t[i, j];
+					m[nx, ny] = this[i, j];
 					ny++;
 				}
 				nx++;
@@ -190,7 +189,7 @@
 
 		public override string ToString ()
 		{
-			return $"{row_0.x}, {row_1.x}, {row_2.x}\n{row_0.y}, {row_1.y}, {row_2.y}\n{row_0.z}, {row_1.z}, {row_2.z}\nDet = {GetDeterminant()}";
+			return $"{row_0};\n{row_1};\n{row_2};\nDet = {GetDeterminant()}";
 		}
 	}
 }
