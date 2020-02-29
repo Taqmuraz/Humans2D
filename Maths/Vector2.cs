@@ -92,6 +92,30 @@ namespace EnginePart
 			}
 		}
 
+		public float this[int index]
+		{
+			get
+			{
+				switch (index)
+				{
+					case 0: return x;
+					case 1: return y;
+					default:
+						throw new ArgumentOutOfRangeException ("Element index out of Vector2 range");
+				}
+			}
+			set
+			{
+				switch (index)
+				{
+					case 0: x = value; return;
+					case 1: y = value; return;
+					default:
+						throw new ArgumentOutOfRangeException ("Element index out of Vector2 range");
+				}
+			}
+		}
+
 		public static readonly Vector2 right = new Vector2 (1, 0);
 		public static readonly Vector2 zero = new Vector2 (0, 0);
 		public static readonly Vector2 one = new Vector2 (1, 1);

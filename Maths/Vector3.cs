@@ -108,6 +108,16 @@ namespace EnginePart
 					default: throw new System.ArgumentException ("Element index out of vector range");
 				}
 			}
+			set
+			{
+				switch (index)
+				{
+					case 0: x = value; return;
+					case 1: y = value; return;
+					case 2: z = value; return;
+					default: throw new System.ArgumentException ("Element index out of vector range");
+				}
+			}
 		}
 
 		public static float Angle (Vector3 a, Vector3 b)

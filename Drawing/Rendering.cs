@@ -13,7 +13,7 @@ namespace EnginePart
 			}
 			public abstract void Draw (IDrawDevice device);
 
-			void IDisposable.Dispose ()
+			public void Dispose ()
 			{
 				drawable.Remove (this);
 			}

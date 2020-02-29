@@ -10,19 +10,15 @@ using EnginePart;
 
 namespace WinFormsGraphics
 {
-	public partial class MainForm : Form
+	public partial class MainForm : Form, MouseControlEvents.IMouseControl
 	{
-		public static string debug;
-
 		Point mouseLocation;
 		HumanRenderer human;
-		private IDrawDevice device;
 
 		public MainForm ()
 		{
-			device = new NativeDrawDevice (CreateGraphics(), Pens.White);
-
 			SetStyle (ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+			WindowState = FormWindowState.Maximized;
 
 			InitializeComponent ();
 
@@ -30,6 +26,8 @@ namespace WinFormsGraphics
 			human.root.localScale = new Vector2 (55, 55);
 			human.root.position = new Vector2 (Width >> 1, Height >> 1);
 			CreateHumanControl ();
+
+			MouseControlEvents.AssignControl (this);
 
 			Timer timer = new Timer ();
 			timer.Interval = 10;
@@ -39,48 +37,10 @@ namespace WinFormsGraphics
 
 		private void CreateHumanControl ()
 		{
-			int index = 0;
 			foreach (var bone in human.GetBones ())
 			{
-				var label = new Label ();
-				label.Text = bone.name;
-				label.Bounds = new Rectangle (0, index * 25, 100, 25);
-				label.Parent = this;
-
-				var rotation = new HScrollBar ();
-				float curRot = bone.bone.rotation;
-				rotation.Maximum = 180;
-				rotation.Minimum = -180;
-				rotation.ValueChanged += (s, e) =>
-				{
-					bone.bone.rotation = curRot + rotation.Value;
-				};
-				rotation.Bounds = new Rectangle (200, 25 * index, 100, 10);
-				rotation.Parent = this;
-
-				var parent = bone.bone.parent;
-				var pos = bone.bone.localPosition;
-				var toggle = new CheckBox ();
-				toggle.Checked = true;
-				toggle.CheckedChanged += (s, e) =>
-				{
-					if (toggle.Checked)
-					{
-						bone.bone.localPosition = bone.bone.position;
-						bone.bone.parent = parent;
-					}
-					else
-					{
-						bone.bone.parent = parent;
-						bone.bone.localPosition = pos;
-					}
-					return;
-				};
-				toggle.Bounds = new Rectangle (100, 25 * index, 100, 25);
-				toggle.Text = "Enable parent";
-				toggle.Parent = this;
-
-				index++;
+				new TransformPositionControl (bone.bone);
+				new TransformRotationControl (bone.bone);
 			}
 		}
 
@@ -88,11 +48,25 @@ namespace WinFormsGraphics
 		{
 			base.OnMouseMove (e);
 			mouseLocation = (Point)ScreenToView((Vector2)e.Location);
+			MoveControlEvent ((Vector2)mouseLocation);
 		}
 		protected override void OnMouseClick (MouseEventArgs e)
 		{
 			base.OnMouseClick (e);
-			human.root.position = (Vector2)mouseLocation;
+			mouseLocation = (Point)ScreenToView ((Vector2)e.Location);
+			ClickControlEvent ((Vector2)mouseLocation);
+		}
+		protected override void OnMouseDown (MouseEventArgs e)
+		{
+			base.OnMouseDown (e);
+			mouseLocation = (Point)ScreenToView ((Vector2)e.Location);
+			DownControlEvent ((Vector2)mouseLocation);
+		}
+		protected override void OnMouseUp (MouseEventArgs e)
+		{
+			base.OnMouseUp (e);
+			mouseLocation = (Point)ScreenToView ((Vector2)e.Location);
+			UpControlEvent ((Vector2)mouseLocation);
 		}
 
 		protected Vector2 ScreenToView (Vector2 origin)
@@ -106,7 +80,7 @@ namespace WinFormsGraphics
 			base.OnPaint (e);
 			var g = e.Graphics;
 			g.Clear (Color.Black);
-			g.DrawString (human.ToString(), SystemFonts.DefaultFont, Brushes.White, 300f, 0f);
+			g.DrawString (debug, SystemFonts.DefaultFont, Brushes.White, 300f, 0f);
 
 			var trans = g.Transform;
 
@@ -118,5 +92,10 @@ namespace WinFormsGraphics
 
 			Rendering.Draw (new NativeDrawDevice(g, Pens.White));
 		}
+
+		public event Action<Vector2> ClickControlEvent;
+		public event Action<Vector2> DownControlEvent;
+		public event Action<Vector2> UpControlEvent;
+		public event Action<Vector2> MoveControlEvent;
 	}
 }

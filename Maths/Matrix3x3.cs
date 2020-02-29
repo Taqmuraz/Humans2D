@@ -44,6 +44,16 @@
 			{
 				return this[index][element];
 			}
+			set
+			{
+				switch (index)
+				{
+					case 0: row_0[element] = value; break;
+					case 1: row_1[element] = value; break;
+					case 2: row_2[element] = value; break;
+					default: throw new System.ArgumentException ("Row index out of matrix range");
+				}
+			}
 		}
 
 		public static Matrix3x3 operator * (Matrix3x3 a, float b)
@@ -110,9 +120,71 @@
 				);
 		}
 
+		public Matrix3x3 GetPosition ()
+		{
+			return new Matrix3x3 (Vector3.right, Vector3.up, row_2);
+		}
+		public Matrix3x3 GetRotation ()
+		{
+			return new Matrix3x3 (row_0.normalized, row_1.normalized, Vector3.forward);
+		}
+		public Matrix3x3 GetScale ()
+		{
+			return new Matrix3x3 (Vector3.right * row_0.length, Vector3.up * row_1.length, Vector3.forward);
+		}
+		public Matrix3x3 GetRotationScale ()
+		{
+			return new Matrix3x3 (row_0, row_1, Vector3.forward);
+		}
+		public Matrix3x3 GetRotationPosition ()
+		{
+			return new Matrix3x3 (row_0.normalized, row_1.normalized, row_2);
+		}
+		public Matrix3x3 GetPositionScale ()
+		{
+			return new Matrix3x3 (Vector3.right * row_0.length, Vector3.up * row_1.length, row_2);
+		}
+
 		public Matrix3x3 GetInversed ()
 		{
-			return GetTransponed () * (1f / GetDeterminant ());
+			return GetAdj () * (1f / GetDeterminant ());
+		}
+
+		public Matrix3x3 GetAdj ()
+		{
+			Matrix3x3 resoult = new Matrix3x3 ();
+			for (int i_x = 0; i_x < 3; i_x++)
+			{
+				for (int i_y = 0; i_y < 3; i_y++)
+				{
+					resoult[i_x, i_y] = MinorStage (i_x, i_y);
+				}
+			}
+			return resoult;
+		}
+		private Matrix2x2 Minor (int x, int y)
+		{
+			var m = new Matrix2x2 ();
+			int nx = 0;
+
+			for (int i = 0; i < 3; i++)
+			{
+				int ny = 0;
+				if (i == x) continue;
+				for (int j = 0; j < 3; j++)
+				{
+					if (j == y) continue;
+					m[nx, ny] = this[i, j];
+					ny++;
+				}
+				nx++;
+			}
+
+			return m;
+		}
+		private float MinorStage (int x, int y)
+		{
+			return Minor(x, y).GetDeterminant ();
 		}
 
 		public override string ToString ()

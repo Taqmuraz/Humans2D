@@ -42,7 +42,14 @@
 		public Vector2 position
 		{
 			get => (Vector2)globalMatrix[2];
-			set => localPosition = (Vector2)(parentMatrix.GetInversed() * new Vector3(value.x, value.y, 1f));
+			set
+			{
+				Vector2 pos = (Vector2)(parentMatrix * Vector3.forward);
+				Vector2 delta = value - pos;
+
+				Debug.Log (parentMatrix * Vector3.right + " ||| " + parentMatrix * (Vector3.right + Vector3.forward));
+				localPosition = (Vector2)(parentMatrix.GetInversed () * new Vector3 (delta.x, delta.y, 1f));
+			}
 		}
 		public float rotation
 		{

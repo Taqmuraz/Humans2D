@@ -69,18 +69,6 @@
 			device.DrawLine (color, handRBone.position, handRBone.right + handRBone.position);
 			device.DrawLine (color, kneeLBone.position, kneeLBone.right + kneeLBone.position);
 			device.DrawLine (color, kneeRBone.position, kneeRBone.right + kneeRBone.position);
-
-			Color32 blue = new Color32 (0, 0, 0xff, 0xff);
-			Color32 red = new Color32 (0xff, 0, 0, 0xff);
-			Color32 green = new Color32 (0, 0xff, 0, 0xff);
-
-			foreach (var bone in GetBones())
-			{
-				var t = bone.bone;
-				device.DrawEllipse (blue, t.position, Vector2.one * 20f);
-				//device.DrawLine (red, t.position, t.position + t.right * 0.5f);
-				//device.DrawLine (green, t.position, t.position + t.up * 0.5f);
-			}
 		}
 
 		public override string ToString ()
@@ -90,8 +78,9 @@
 
 		public HumanBone[] GetBones ()
 		{
-			return new HumanBone[9]
+			return new HumanBone[10]
 			{
+				new HumanBone("Root", root),
 				new HumanBone ("Body", bodyBone),
 				new HumanBone ("Head", headBone),
 				new HumanBone ("Neck", neckBone),

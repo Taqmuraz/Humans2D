@@ -44,9 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\IMouseControl.cs" />
+    <Compile Include="Controls\IMouseHandler.cs" />
+    <Compile Include="Controls\IScreenTrigger.cs" />
+    <Compile Include="Controls\MouseHandler.cs" />
+    <Compile Include="Controls\TransformControl.cs" />
+    <Compile Include="Controls\TransformPositionControl.cs" />
+    <Compile Include="Controls\TransformRotationControl.cs" />
+    <Compile Include="MainFormDebug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\CircleRenderer.cs" />
     <Compile Include="Drawing\GameObject.cs" />
     <Compile Include="Drawing\HumanRenderer.cs" />
-    <Compile Include="Drawing\Matrix3x3.cs" />
+    <Compile Include="Maths\Matrix2x2.cs" />
+    <Compile Include="Maths\Matrix3x3.cs" />
+    <Compile Include="Controls\MouseControlEvents.cs" />
     <Compile Include="Drawing\Rendering.cs" />
     <Compile Include="Drawing\Transform.cs" />
     <Compile Include="Maths\Color32.cs" />
