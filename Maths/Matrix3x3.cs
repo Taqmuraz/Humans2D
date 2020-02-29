@@ -157,14 +157,15 @@
 			{
 				for (int i_y = 0; i_y < 3; i_y++)
 				{
-					resoult[i_x, i_y] = MinorStage (i_x, i_y);
+					resoult[i_x, i_y] = (-1f).Pow(i_x + i_y) * MinorStage (i_x, i_y);
 				}
 			}
 			return resoult;
 		}
-		private Matrix2x2 Minor (int x, int y)
+		public Matrix2x2 Minor (int x, int y)
 		{
 			var m = new Matrix2x2 ();
+			var t = GetTransponed ();
 			int nx = 0;
 
 			for (int i = 0; i < 3; i++)
@@ -174,7 +175,7 @@
 				for (int j = 0; j < 3; j++)
 				{
 					if (j == y) continue;
-					m[nx, ny] = this[i, j];
+					m[nx, ny] = t[i, j];
 					ny++;
 				}
 				nx++;

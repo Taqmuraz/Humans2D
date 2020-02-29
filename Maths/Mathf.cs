@@ -102,6 +102,11 @@ namespace EnginePart
 		{
 			return Matrix3x3.CreateTransformMatrix (position, Vector2.one, rotation);
 		}
+
+		public static float Pow (this float a, float b)
+		{
+			return (float)Math.Pow (a, b);
+		}
 	}
 }
 

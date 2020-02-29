@@ -44,17 +44,13 @@
 			get => (Vector2)globalMatrix[2];
 			set
 			{
-				Vector2 pos = (Vector2)(parentMatrix * Vector3.forward);
-				Vector2 delta = value - pos;
-
-				Debug.Log (parentMatrix * Vector3.right + " ||| " + parentMatrix * (Vector3.right + Vector3.forward));
-				localPosition = (Vector2)(parentMatrix.GetInversed () * new Vector3 (delta.x, delta.y, 1f));
+				localPosition = (Vector2)(parentMatrix.GetInversed () * new Vector3 (value.x, value.y, 1f));
 			}
 		}
 		public float rotation
 		{
 			get => ((Vector2)localMatrix[0]).GetDirectionAngle ();
-			set => localRotation = ((Vector2)(parentMatrix.GetInversed() * new Vector3(value.Cos (), value.Sin(), 1f))).GetDirectionAngle ();
+			set => localRotation = ((Vector2)(parentMatrix.GetInversed() * new Vector3(value.Cos (), value.Sin(), 0f))).GetDirectionAngle ();
 		}
 
 		public Vector2 right => (Vector2)globalMatrix[0];
