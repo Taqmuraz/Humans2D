@@ -21,6 +21,8 @@
 		private Transform kneeLBone;
 		private Transform kneeRBone;
 		private Transform handLBone;
+		private Transform elbowLBone;
+		private Transform elbowRBone;
 		private Transform handRBone;
 		private Transform headBone;
 
@@ -46,21 +48,30 @@
 			kneeRBone = new Transform (Mathf.CreateTransformMatrix (Vector2.right, 0f));
 			kneeRBone.parent = legRBone;
 
-			handLBone = new Transform (Mathf.CreateTransformMatrix (Vector2.zero, -15f));
-			handLBone.parent = neckBone;
+			handLBone = new Transform (Mathf.CreateTransformMatrix (Vector2.up, -15f));
+			handLBone.parent = bodyBone;
+			handLBone.localScale = Vector2.one * 0.75f;
 
-			handRBone = new Transform (Mathf.CreateTransformMatrix (Vector2.zero, 195f));
-			handRBone.parent = neckBone;
+			handRBone = new Transform (Mathf.CreateTransformMatrix (Vector2.up, 195f));
+			handRBone.parent = bodyBone;
+			handRBone.localScale = Vector2.one * 0.75f;
 
-			headBone = new Transform (Mathf.CreateTransformMatrix (Vector2.zero, 0f));
+			elbowLBone = new Transform (Mathf.CreateTransformMatrix(Vector2.right, 15f));
+			elbowLBone.parent = handLBone;
+
+			elbowRBone = new Transform (Mathf.CreateTransformMatrix (Vector2.right, -15f));
+			elbowRBone.parent = handRBone;
+
+			headBone = new Transform (Mathf.CreateTransformMatrix (Vector2.up * 0.4f, 0f));
 			headBone.parent = neckBone;
+			headBone.localScale = new Vector2 (0.5f, 0.6f);
 		}
 
 		public override void Draw (IDrawDevice device)
 		{
 			Color32 color = new Color32 (0x00, 0xff, 0xff, 0xff);
-			device.FillEllipse (color, headBone.position + headBone.up * 0.35f, (headBone.globalScale) * 0.5f);
-			device.DrawLine (color, neckBone.position, headBone.position + headBone.up * 0.35f);
+			device.FillEllipse (color, headBone.Native);
+			device.DrawLine (color, neckBone.position, headBone.position);
 			device.DrawLine (color, root.position, bodyBone.position);
 			device.DrawLine (color, bodyBone.position, neckBone.position);
 			device.DrawLine (color, legLBone.position, legLBone.right + legLBone.position);
@@ -69,6 +80,13 @@
 			device.DrawLine (color, handRBone.position, handRBone.right + handRBone.position);
 			device.DrawLine (color, kneeLBone.position, kneeLBone.right + kneeLBone.position);
 			device.DrawLine (color, kneeRBone.position, kneeRBone.right + kneeRBone.position);
+			device.DrawLine (color, elbowLBone.position, elbowLBone.right + elbowLBone.position);
+			device.DrawLine (color, elbowRBone.position, elbowRBone.right + elbowRBone.position);
+
+			foreach (var bone in GetBones())
+			{
+				device.DrawText (new Color32(255, 200, 0, 255), bone.bone.position + bone.bone.right * 1.25f, bone.name);
+			}
 		}
 
 		public override string ToString ()
@@ -78,7 +96,7 @@
 
 		public HumanBone[] GetBones ()
 		{
-			return new HumanBone[10]
+			return new HumanBone[12]
 			{
 				new HumanBone("Root", root),
 				new HumanBone ("Body", bodyBone),
@@ -89,6 +107,8 @@
 				new HumanBone ("LegL", legLBone),
 				new HumanBone ("LegR", legRBone),
 				new HumanBone("KneeL", kneeLBone),
+				new HumanBone("ElbowL", elbowLBone),
+				new HumanBone("ElbowR", elbowRBone),
 				new HumanBone("KneeR", kneeRBone)
 			};
 		}

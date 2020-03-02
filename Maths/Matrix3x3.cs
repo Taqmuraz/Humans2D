@@ -89,6 +89,15 @@
 			matrix.row_1 *= scale.y;
 			return matrix;
 		}
+		public static Matrix3x3 CreateScaleMatrix (Vector2 scale)
+		{
+			return new Matrix3x3
+				(
+					new Vector3 (scale.x, 0f, 0f),
+					new Vector3 (0f, scale.y, 0f),
+					new Vector3 (0f, 0f, 1f)
+				);
+		}
 		public static Matrix3x3 CreateRotationMatrix (float rotation)
 		{
 			float sin = rotation.Sin ();

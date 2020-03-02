@@ -10,7 +10,7 @@ using EnginePart;
 
 namespace WinFormsGraphics
 {
-	public partial class MainForm : Form, MouseControlEvents.IMouseControl
+	public partial class MainForm : Form, MouseControlEvents.IMouseControl, ICanvas
 	{
 		Point mouseLocation;
 		HumanRenderer human;
@@ -79,23 +79,25 @@ namespace WinFormsGraphics
 		{
 			base.OnPaint (e);
 			var g = e.Graphics;
+
+			var device = new NativeDrawDevice (g, this);
+
 			g.Clear (Color.Black);
 			g.DrawString (debug, SystemFonts.DefaultFont, Brushes.White, 300f, 0f);
 
-			var trans = g.Transform;
+			device.LoadIdentity ();
 
-			Point center = new Point (Width >> 1, Height >> 1);
-			trans.Scale (-1f, 1f);
-			trans.RotateAt (180f, center);
-			trans.Translate (Width, 0f);
-			g.Transform = trans;
-
-			Rendering.Draw (new NativeDrawDevice(g, Pens.White));
+			Rendering.Draw (device);
 		}
 
 		public event Action<Vector2> ClickControlEvent;
 		public event Action<Vector2> DownControlEvent;
 		public event Action<Vector2> UpControlEvent;
 		public event Action<Vector2> MoveControlEvent;
+
+		public Vector2 GetSize ()
+		{
+			return new Vector2 (Width, Height);
+		}
 	}
 }
