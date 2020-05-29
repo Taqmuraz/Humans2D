@@ -7,18 +7,21 @@ namespace AnimationCreateForm
 {
 	public class AnimationDrawPanel : GraphicsPanel
 	{
-		private class PanelClicHandler : MouseControlEvents.MouseHandler
+		private class PanelClicHandler : InteractiveObject
 		{
 			private AnimationDrawPanel panel;
-			private ContextMenuStrip cMenu;
 
 			public override int layer => -1;
 
-			public PanelClicHandler (AnimationDrawPanel panel)
+			public PanelClicHandler (AnimationDrawPanel panel) : base (new Transform(Matrix3x3.identity))
 			{
 				this.panel = panel;
-				cMenu = new ContextMenuStrip ();
-				cMenu.Items.Add ("Create transform", null, panel.CreateTransform);
+
+				CreateContextMenu ("Main",
+					new ContextMenuAction ("Create transform", panel.CreateTransform),
+					new ContextMenuDropdown("Enable layer", new ContextMenuAction("DEFAULT", () => Rendering.SetLayerEnabled(DrawLayer.DEFAULT, true)), new ContextMenuAction ("UI", () => Rendering.SetLayerEnabled (DrawLayer.UI, true))),
+					new ContextMenuDropdown("Disable layer", new ContextMenuAction("DEFAULT", () => Rendering.SetLayerEnabled(DrawLayer.DEFAULT, false)), new ContextMenuAction ("UI", () => Rendering.SetLayerEnabled (DrawLayer.UI, false)))
+					);
 			}
 
 			public override bool Contains (Vector2 point)
@@ -27,7 +30,17 @@ namespace AnimationCreateForm
 			}
 			public override void OnContextClick (Vector2 point)
 			{
-				cMenu.Show (panel, MousePosition);
+				transform.position = point;
+				ShowContextMenu ("Main");
+			}
+
+			protected override Color32 color { set { return; } }
+			protected override Color32 normalColor { get; }
+			protected override Color32 hoveredColor { get; }
+			protected override Color32 selectedColor { get; }
+
+			protected override void InitalizeGraphics ()
+			{
 			}
 		}
 
@@ -36,7 +49,7 @@ namespace AnimationCreateForm
 			new PanelClicHandler (this);
 		}
 
-		private void CreateTransform (object sender, EventArgs args)
+		private void CreateTransform ()
 		{
 			var transform = new Transform ();
 			transform.position = mouseLocation;

@@ -17,6 +17,7 @@
 			positionCircle.localScale = GetCircleLocalScale ();
 
 			positionCircleRenderer = new CircleRenderer (positionCircle, GetExitColor());
+			positionCircleRenderer.layer = DrawLayer.UI;
 		}
 
 		protected abstract Vector2 GetCircleLocalPosition ();

@@ -10,16 +10,43 @@ namespace AnimationCreateForm
 	{
 		protected Transform transform { get; private set; }
 
-		protected struct ContextMenuItem
+		protected class ContextMenuAction : IToolStripItemTemplate
 		{
-			public string text;
-			public Action action;
+			string text;
+			Action action;
 
-			public ContextMenuItem (string text, Action action)
+			public ContextMenuAction (string text, Action action)
 			{
 				this.text = text;
 				this.action = action;
 			}
+
+			public void AddItemToStrip (ToolStripItemCollection items)
+			{
+				items.Add (text, null, (s, e) => action ());
+			}
+		}
+		protected class ContextMenuDropdown : IToolStripItemTemplate
+		{
+			string text;
+			IToolStripItemTemplate[] elements;
+
+			public ContextMenuDropdown (string text, params IToolStripItemTemplate[] elements)
+			{
+				this.text = text;
+				this.elements = elements;
+			}
+
+			public void AddItemToStrip (ToolStripItemCollection items)
+			{
+				ToolStripMenuItem toolStripDropDown = new ToolStripMenuItem (text);
+				foreach (var item in elements) item.AddItemToStrip (toolStripDropDown.DropDownItems);
+				items.Add (toolStripDropDown);
+			}
+		}
+		protected interface IToolStripItemTemplate
+		{
+			void AddItemToStrip (ToolStripItemCollection items);
 		}
 
 		private Dictionary<string, ContextMenuStrip> contextMenus;
@@ -57,10 +84,10 @@ namespace AnimationCreateForm
 			color = isSelected ? selectedColor : normalColor;
 		}
 
-		protected void CreateContextMenu (string menuName, params ContextMenuItem[] items)
+		protected void CreateContextMenu (string menuName, params IToolStripItemTemplate[] items)
 		{
 			var menu = new ContextMenuStrip ();
-			foreach (var item in items) menu.Items.Add (item.text, null, (s, e) => item.action ());
+			foreach (var item in items) item.AddItemToStrip (menu.Items);
 			contextMenus.Add (menuName, menu);
 		}
 
@@ -68,7 +95,9 @@ namespace AnimationCreateForm
 		{
 			if (contextMenus.ContainsKey (menuName))
 			{
-				contextMenus[menuName].Show (Form.ActiveForm, (Point)transform.position);
+				Vector2 pos = transform.position;
+				pos.y = Form.ActiveForm.Height - pos.y;
+				contextMenus[menuName].Show (Form.ActiveForm, (Point)pos);
 			}
 			else throw new ArgumentException ($"There are no menu with name {menuName}");
 		}

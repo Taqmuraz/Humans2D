@@ -83,7 +83,7 @@ namespace EnginePart
 		}
 		public float rotation
 		{
-			get => ((Vector2)localMatrix[0]).GetDirectionAngle ();
+			get => ((Vector2)globalMatrix[0]).GetDirectionAngle ();
 			set => localRotation = ((Vector2)(parentMatrix.GetInversed() * new Vector3(value.Cos (), value.Sin(), 0f))).GetDirectionAngle ();
 		}
 

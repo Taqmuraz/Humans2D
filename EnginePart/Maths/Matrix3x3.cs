@@ -64,21 +64,31 @@
 			return a;
 		}
 
-		public static Vector3 operator * (Matrix3x3 m, Vector3 v)
+		public static Vector3 operator * (Matrix3x3 lhs, Vector3 vector)
 		{
-			float x = Vector3.Dot (v, m.row_0);
-			float y = Vector3.Dot (v, m.row_1);
-			float z = Vector3.Dot (v, m.row_2);
-			return new Vector3 (x, y, z);
+			Vector3 res;
+			res.x = lhs.row_0.x * vector.x + lhs.row_0.y * vector.y + lhs.row_0.z * vector.z;
+			res.y = lhs.row_1.x * vector.x + lhs.row_1.y * vector.y + lhs.row_1.z * vector.z;
+			res.z = lhs.row_2.x * vector.x + lhs.row_2.y * vector.y + lhs.row_2.z * vector.z;
+			return res;
 		}
 
-		public static Matrix3x3 operator * (Matrix3x3 a, Matrix3x3 b)
+		public static Matrix3x3 operator * (Matrix3x3 lhs, Matrix3x3 rhs)
 		{
-			b = b.GetTransponed ();
-			Vector3 c0 = b * a.row_0;
-			Vector3 c1 = b * a.row_1;
-			Vector3 c2 = b * a.row_2;
-			return new Matrix3x3 (c0, c1, c2);
+			Matrix3x3 res;
+			res.row_0.x = lhs.row_0.x * rhs.row_0.x + lhs.row_0.y * rhs.row_1.x + lhs.row_0.z * rhs.row_2.x;
+			res.row_0.y = lhs.row_0.x * rhs.row_0.y + lhs.row_0.y * rhs.row_1.y + lhs.row_0.z * rhs.row_2.y;
+			res.row_0.z = lhs.row_0.x * rhs.row_0.z + lhs.row_0.y * rhs.row_1.z + lhs.row_0.z * rhs.row_2.z;
+
+			res.row_1.x = lhs.row_1.x * rhs.row_0.x + lhs.row_1.y * rhs.row_1.x + lhs.row_1.z * rhs.row_2.x;
+			res.row_1.y = lhs.row_1.x * rhs.row_0.y + lhs.row_1.y * rhs.row_1.y + lhs.row_1.z * rhs.row_2.y;
+			res.row_1.z = lhs.row_1.x * rhs.row_0.z + lhs.row_1.y * rhs.row_1.z + lhs.row_1.z * rhs.row_2.z;
+
+			res.row_2.x = lhs.row_2.x * rhs.row_0.x + lhs.row_2.y * rhs.row_1.x + lhs.row_2.z * rhs.row_2.x;
+			res.row_2.y = lhs.row_2.x * rhs.row_0.y + lhs.row_2.y * rhs.row_1.y + lhs.row_2.z * rhs.row_2.y;
+			res.row_2.z = lhs.row_2.x * rhs.row_0.z + lhs.row_2.y * rhs.row_1.z + lhs.row_2.z * rhs.row_2.z;
+
+			return res;
 		}
 
 		public static Matrix3x3 CreateTransformMatrix (Vector2 position, Vector2 scale, float rotation)

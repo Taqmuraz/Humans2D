@@ -19,26 +19,17 @@ namespace AnimationCreateForm
 
 			transformControls = tcList;
 			CreateContextMenu ("Main",
-				new ContextMenuItem("Add child", () => ShowContextMenu("AddChild")),
-				new ContextMenuItem("Add primitive", () => ShowContextMenu("AddPrimitive")),
-				new ContextMenuItem("Remove", Remove),
-				new ContextMenuItem("Create copy", CreateCopy)
-				);
-
-			CreateContextMenu ("AddChild",
-				new ContextMenuItem ("At center", () => AddChild(Vector2.zero)),
-				new ContextMenuItem ("At end", () => AddChild(Vector2.right))
-				);
-
-			CreateContextMenu ("AddPrimitive",
-				new ContextMenuItem ("Line", () => new LineRenderer(transform)),
-				new ContextMenuItem ("Ellipse", () => new CircleRenderer(transform, Color32.white))
+				new ContextMenuDropdown("Add child", new ContextMenuAction ("At center", () => AddChild (Vector2.zero)), new ContextMenuAction ("At end", () => AddChild (Vector2.right))),
+				new ContextMenuDropdown("Add primitive", new ContextMenuAction ("Line", () => new LineRenderer (transform)), new ContextMenuAction ("Ellipse", () => new CircleRenderer (transform, Color32.white))),
+				new ContextMenuAction("Remove", Remove),
+				new ContextMenuAction("Create copy", CreateCopy)
 				);
 		}
 
 		protected override void InitalizeGraphics ()
 		{
 			line = new LineRenderer (transform);
+			line.layer = DrawLayer.UI;
 		}
 
 		protected override Color32 normalColor => Color32.white * 0.75f;
@@ -93,6 +84,7 @@ namespace AnimationCreateForm
 		{
 			line.Dispose ();
 			foreach (var t in transformControls) t.Dispose ();
+			this.Dispose ();
 		}
 		private void CreateCopy ()
 		{

@@ -3,5 +3,6 @@
 	public interface IDrawable
 	{
 		void Draw (IDrawDevice device);
+		DrawLayer layer { get; }
 	}
 }

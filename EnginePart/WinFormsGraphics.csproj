@@ -57,6 +57,7 @@
     <Compile Include="Drawing\Animation\Animation.cs" />
     <Compile Include="Drawing\Animation\AnimationFrame.cs" />
     <Compile Include="Drawing\Animation\AnimationFrameBone.cs" />
+    <Compile Include="Drawing\DrawLayer.cs" />
     <Compile Include="Drawing\ICanvas.cs" />
     <Compile Include="Drawing\Resources.cs" />
     <Compile Include="Drawing\TextureDatabase.cs" />
